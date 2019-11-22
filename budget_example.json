@@ -1,0 +1,91 @@
+[
+    {
+        "amount": 1000.00,
+        "cycle": "WEEKLY",
+        "due_date": "Friday",
+        "due_date_type": "WeekDay",
+        "name": "My Salary"
+    },
+    {
+        "amount": 150.0,
+        "cycle": "BIWEEKLY",
+        "due_date": {
+            "day": 1,
+            "month": 1,
+            "year": 2019
+        },
+        "due_date_type": "Date",
+        "name": "Sweet money"
+    },
+    {
+        "amount": -250.00,
+        "cycle": "MONTHLY",
+        "due_date": 25,
+        "due_date_type": "DateNumber",
+        "name": "Insurance"
+    },
+    {
+        "amount": -50,
+        "cycle": "DAILY",
+        "due_date_type": "Daily",
+        "name": "Food"
+    },
+
+    {
+        "amount": -99.99,
+        "cycle": "MONTHLY",
+        "due_date": 15,
+        "due_date_type": "DateNumber",
+        "name": "Internet"
+    },
+    {
+        "amount": -100.0,
+        "cycle": "WEEKLY",
+        "due_date": "Monday",
+        "due_date_type": "WeekDay",
+        "name": "Savings"
+    },
+    {
+        "amount": -987.65,
+        "cycle": "MONTHLY",
+        "due_date": 15,
+        "due_date_type": "DateNumber",
+        "name": "Mortgage"
+    },
+    {
+        "amount": -150.0,
+        "cycle": "QUARTERLY",
+        "due_date": {
+            "day": 30,
+            "month": 11,
+            "year": 2018
+        },
+        "due_date_type": "Date",
+        "name": "Sewer"
+    },
+    {
+        "amount": -115.79,
+        "cycle": "MONTHLY",
+        "due_date": 18,
+        "due_date_type": "DateNumber",
+        "name": "HVAC"
+    },
+    {
+        "amount": -45.0,
+        "cycle": "WEEKLY",
+        "due_date": "Friday",
+        "due_date_type": "WeekDay",
+        "name": "Gas"
+    },
+    {
+        "amount": -60,
+        "cycle": "BIMONTHLY",
+        "due_date": {
+            "day": 10,
+            "month": 1,
+            "year": 2019
+        },
+        "due_date_type": "Date",
+        "name": "Hair-do"
+    }
+]
