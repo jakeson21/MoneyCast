@@ -307,5 +307,3 @@ if __name__ == "__main__":
         forecast(balance=args.balance, start=date.today(), duration=args.length, budget=data)
     else:
         run_example(balance=args.balance, weeks=args.length)
-
-

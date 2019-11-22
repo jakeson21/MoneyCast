@@ -107,4 +107,3 @@ venv.bak/
 .idea
 *budget.json
 pytype_output
-.vscode
