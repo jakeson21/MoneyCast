@@ -59,10 +59,11 @@ def add_months(sourcedate, months):
 
 
 class BudgetItem:
-    def __init__(self, name, amount, cycle: Cycle, due_date=None):
+    def __init__(self, name, amount, cycle: Cycle, due_date=None, auto_draft=False):
         self.name = name
         self.amount = amount
         self.cycle = cycle
+        self.auto_draft = auto_draft
 
         self.due_date_type = None
         if isinstance(due_date, int):
@@ -96,7 +97,8 @@ class BudgetItemEncoder(json.JSONEncoder):
         if isinstance(obj, BudgetItem):
             json_repr = {'name': obj.name,
                          'amount': obj.amount,
-                         'cycle': obj.cycle.name}
+                         'cycle': obj.cycle.name,
+                         'auto_draft': obj.auto_draft}
             # Now encode due_date
             if isinstance(obj.due_date, int):
                 due_date_type = DueDateType.DateNumber.name
@@ -121,13 +123,14 @@ class BudgetItemDecoder(json.JSONDecoder):
     def decode(self, obj):
         budget = list()
         json_obj = json.loads(obj)
+        active_json = json_obj['Active']
 
         # These fields must be exist in every entry
-        required_main_fields = ['name', 'amount', 'cycle', 'due_date_type']
+        required_main_fields = ['name', 'amount', 'cycle', 'due_date_type', 'auto_draft']
 
         # Parse the json string into a BudgetItem list
         try:
-            for item in json_obj:
+            for item in active_json:
                 # Validate that the required fields exist
                 for field in required_main_fields:
                     if field not in item:
@@ -137,11 +140,13 @@ class BudgetItemDecoder(json.JSONDecoder):
                 amount = item['amount']
                 cycle = CycleEnum[item['cycle']]
                 due_date_type = DueDateType[item['due_date_type']]
+                auto_draft = item['auto_draft']
 
                 if due_date_type is DueDateType.Daily:
                     b = BudgetItem(name=name,
                                    amount=amount,
-                                   cycle=cycle)
+                                   cycle=cycle,
+                                   auto_draft=auto_draft)
                 else:
                     if 'due_date' not in item:
                         raise ValueError('missing field \"due_date\" while trying to parse:{}'.format(item))
@@ -155,13 +160,15 @@ class BudgetItemDecoder(json.JSONDecoder):
                         b = BudgetItem(name=name,
                                        amount=amount,
                                        cycle=cycle,
-                                       due_date=date(**item['due_date']))
+                                       due_date=date(**item['due_date']),
+                                       auto_draft=auto_draft)
                     elif due_date_type is DueDateType.DateNumber:
                         due_date = item['due_date']
                         b = BudgetItem(name=name,
                                        amount=amount,
                                        cycle=cycle,
-                                       due_date=due_date)
+                                       due_date=due_date,
+                                       auto_draft=auto_draft)
                     elif due_date_type is DueDateType.WeekDay:
                         try:
                             due_date = DayOfWeek[item['due_date']]
@@ -170,7 +177,10 @@ class BudgetItemDecoder(json.JSONDecoder):
                         b = BudgetItem(name=name,
                                        amount=amount,
                                        cycle=cycle,
-                                       due_date=due_date)
+                                       due_date=due_date,
+                                       auto_draft=auto_draft)
+                # if auto_draft:
+                #     b.name = '*' + b.name + '*'
                 budget.append(b)
 
         except KeyError:
@@ -186,8 +196,12 @@ def forecast(balance, start, duration, budget: List):
     daily_balance = balance
     balance_list = list()
     daily_balance_list = list()
-    # for item in budget:
-    #     print(item)
+
+    # Sort budget list so non-auto-pay items appear first, and in alphabetical order
+    sort_by_name = lambda elem: elem.name
+    sort_by_auto_draft = lambda elem: elem.auto_draft
+    budget.sort(key=sort_by_name)
+    budget.sort(key=sort_by_auto_draft)
 
     # Go through list and set all past due dates to the future as appropriate
     for item in budget:
