@@ -192,18 +192,19 @@ class BudgetItemDecoder(json.JSONDecoder):
         return budget
 
 
-def forecast(balance, start, duration, budget: List):
+def forecast(balance, start, duration, budget: List, json_output):
     print('From', start, 'To', start + timedelta(weeks=duration))
     date_list = [start + timedelta(days=x) for x in range(0, duration*7)]
     daily_balance = balance
     balance_list = list()
     daily_balance_list = list()
+    balance_dict = {'entry': list()}
 
     # Sort budget list so non-auto-pay items appear first, and in alphabetical order
-    sort_by_name = lambda elem: elem.name
-    sort_by_auto_draft = lambda elem: elem.auto_draft
-    budget.sort(key=sort_by_name)
-    budget.sort(key=sort_by_auto_draft)
+    # sort_by_name = lambda elem: elem.name
+    # sort_by_auto_draft = lambda elem: elem.auto_draft
+    budget.sort(key=lambda elem: elem.name)
+    budget.sort(key=lambda elem: elem.auto_draft)
 
     # Go through list and set all past due dates to the future as appropriate
     for item in budget:
@@ -258,12 +259,18 @@ def forecast(balance, start, duration, budget: List):
                         item.due_date = add_months(item.due_date, 12)
 
         balance_list.append([t, '${:,.2f}'.format(daily_balance), trans])
+        balance_dict['entry'].append({'date': str(t), 'balance': daily_balance, 'transactions': [{'name': k, 'amount': v} for k, v in trans.items()]})
         daily_balance_list.append(daily_balance)
 
     print('\n\nDAILY BALANCE PROJECTION\n==================')
 
-    for item in balance_list:
-        print(item[0], '=', item[1], item[2])
+    if json_output:
+        bs = json.dumps(balance_dict, sort_keys=True, indent=4, separators=(',', ': '))
+        print(bs)
+    else:
+        for item in balance_list:
+            print(item[0], '=', item[1], item[2])
+
 
     if have_display:
         plt.style.use('dark_background')
@@ -286,7 +293,7 @@ def forecast(balance, start, duration, budget: List):
         plt.show()
 
 
-def run_example(balance, weeks):
+def run_example(balance, weeks, json_output):
     budget = list()
     budget.append(BudgetItem(name='Salary', amount=1000.00, cycle=CycleEnum.WEEKLY, due_date=DayOfWeek.Friday))
 
@@ -307,7 +314,7 @@ def run_example(balance, weeks):
     # j_obj = json.loads(j_str, cls=BudgetItemDecoder)
     # print('{}'.format(j_obj))
 
-    forecast(balance, date.today(), weeks, budget)
+    forecast(balance, date.today(), weeks, budget, json_output)
 
 
 if __name__ == "__main__":
@@ -315,12 +322,13 @@ if __name__ == "__main__":
     parser.add_argument('balance', metavar='balance', type=float, help='how many weeks to forecast')
     parser.add_argument('length',  metavar='weeks', type=int, help='how many weeks to forecast')
     parser.add_argument('-f', '--file', type=str, help='json file with budget items to read in')
+    parser.add_argument('-j', action='store_true', default=False, dest='json_output', help='enable json output')
     args = parser.parse_args()
 
     print('Forecasting for', args.length, 'weeks')
     if args.file is not None:
         with open(args.file, 'r') as read_file:
             data = json.load(read_file, cls=BudgetItemDecoder)
-        forecast(balance=args.balance, start=date.today(), duration=args.length, budget=data)
+        forecast(balance=args.balance, start=date.today(), duration=args.length, budget=data, json_output=args.json_output)
     else:
-        run_example(balance=args.balance, weeks=args.length)
+        run_example(balance=args.balance, weeks=args.length, json_output=args.json_output)
