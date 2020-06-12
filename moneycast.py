@@ -8,8 +8,10 @@ import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import json
+import os
 import pdb
 
+have_display = bool(os.environ.get('DISPLAY', None))
 
 @unique
 class CycleEnum(Enum):
@@ -263,24 +265,25 @@ def forecast(balance, start, duration, budget: List):
     for item in balance_list:
         print(item[0], '=', item[1], item[2])
 
-    plt.style.use('dark_background')
-    fig, ax = plt.subplots()
-    # for ii, (ival, idate) in enumerate(zip(daily_balance_list, date_list)):
-    #     ax.scatter(idate, ival, s=30, facecolor='g', edgecolor='k', zorder=9999, alpha=.5)
-    ax.plot(date_list, daily_balance_list, 'go-', mec='w')
-    z = np.polyfit(range(0, len(daily_balance_list)), daily_balance_list, 1)
-    y = np.polyval(z, range(0, len(daily_balance_list)))
-    ax.plot(date_list, y)
-    ax.text(date_list[1], y[1]-100, '{}'.format(z), fontsize=8)
+    if have_display:
+        plt.style.use('dark_background')
+        fig, ax = plt.subplots()
+        # for ii, (ival, idate) in enumerate(zip(daily_balance_list, date_list)):
+        #     ax.scatter(idate, ival, s=30, facecolor='g', edgecolor='k', zorder=9999, alpha=.5)
+        ax.plot(date_list, daily_balance_list, 'go-', mec='w')
+        z = np.polyfit(range(0, len(daily_balance_list)), daily_balance_list, 1)
+        y = np.polyval(z, range(0, len(daily_balance_list)))
+        ax.plot(date_list, y)
+        ax.text(date_list[1], y[1]-100, '{}'.format(z), fontsize=8)
 
-    ax.set(xlabel='Date', ylabel='End-of-Day Balance $', title='Daily Balance Projection')
-    ax.grid()
-    # Set the xticks formatting
-    # format xaxis with 3 month intervals
-    ax.get_xaxis().set_major_locator(mdates.DayLocator(interval=int(len(date_list)/8)))
-    ax.get_xaxis().set_major_formatter(mdates.DateFormatter("%b %d, %Y"))
-    fig.autofmt_xdate()
-    plt.show()
+        ax.set(xlabel='Date', ylabel='End-of-Day Balance $', title='Daily Balance Projection')
+        ax.grid()
+        # Set the xticks formatting
+        # format xaxis with 3 month intervals
+        ax.get_xaxis().set_major_locator(mdates.DayLocator(interval=int(len(date_list)/8)))
+        ax.get_xaxis().set_major_formatter(mdates.DateFormatter("%b %d, %Y"))
+        fig.autofmt_xdate()
+        plt.show()
 
 
 def run_example(balance, weeks):

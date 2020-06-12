@@ -5,7 +5,8 @@
             "cycle": "WEEKLY",
             "due_date": "Friday",
             "due_date_type": "WeekDay",
-            "name": "My Salary"
+            "name": "My Salary",
+            "auto_draft": true
         },
         {
             "amount": 150.0,
@@ -16,41 +17,47 @@
                 "year": 2019
             },
             "due_date_type": "Date",
-            "name": "Sweet money"
+            "name": "Sweet money",
+            "auto_draft": true
         },
         {
             "amount": -250.00,
             "cycle": "MONTHLY",
             "due_date": 25,
             "due_date_type": "DateNumber",
-            "name": "Insurance"
+            "name": "Insurance",
+            "auto_draft": false
         },
         {
             "amount": -50,
             "cycle": "DAILY",
             "due_date_type": "Daily",
-            "name": "Food"
+            "name": "Food",
+            "auto_draft": false
         },
         {
             "amount": -99.99,
             "cycle": "MONTHLY",
             "due_date": 15,
             "due_date_type": "DateNumber",
-            "name": "Internet"
+            "name": "Internet",
+            "auto_draft": true
         },
         {
             "amount": -100.0,
             "cycle": "WEEKLY",
             "due_date": "Monday",
             "due_date_type": "WeekDay",
-            "name": "Savings"
+            "name": "Savings",
+            "auto_draft": true
         },
         {
             "amount": -987.65,
             "cycle": "MONTHLY",
             "due_date": 15,
             "due_date_type": "DateNumber",
-            "name": "Mortgage"
+            "name": "Mortgage",
+            "auto_draft": false
         },
         {
             "amount": -150.0,
@@ -61,21 +68,24 @@
                 "year": 2018
             },
             "due_date_type": "Date",
-            "name": "Sewer"
+            "name": "Sewer",
+            "auto_draft": false
         },
         {
             "amount": -115.79,
             "cycle": "MONTHLY",
             "due_date": 18,
             "due_date_type": "DateNumber",
-            "name": "HVAC"
+            "name": "HVAC",
+            "auto_draft": false
         },
         {
             "amount": -45.0,
             "cycle": "WEEKLY",
             "due_date": "Friday",
             "due_date_type": "WeekDay",
-            "name": "Gas"
+            "name": "Gas",
+            "auto_draft": false
         },
         {
             "amount": -60,
@@ -86,7 +96,8 @@
                 "year": 2019
             },
             "due_date_type": "Date",
-            "name": "Hair-do"
+            "name": "Hair-do",
+            "auto_draft": false
         }
     ],
     "Inactive": [
